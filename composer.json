@@ -1,0 +1,24 @@
+{
+    "name": "local/laravel-medialibrary",
+    "description": "Two-step upload media system with folder organization",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Local\\MediaLibrary\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0",
+        "spatie/laravel-medialibrary": "^11.0",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Local\\MediaLibrary\\MediaServiceProvider"
+            ]
+        }
+    }
+}
