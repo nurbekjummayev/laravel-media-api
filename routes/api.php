@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Local\MediaLibrary\Http\Controllers\MediaFolderController;
-use Local\MediaLibrary\Http\Controllers\UploadController;
+use Nurbekjummayev\MediaApiLibrary\Http\Controllers\MediaFolderController;
+use Nurbekjummayev\MediaApiLibrary\Http\Controllers\UploadController;
 
 Route::group([
     'prefix' => config('media-upload.routes.prefix', 'api'),

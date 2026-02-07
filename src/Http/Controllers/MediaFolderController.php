@@ -1,14 +1,14 @@
 <?php
 
-namespace Local\MediaLibrary\Http\Controllers;
+namespace Nurbekjummayev\MediaApiLibrary\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
-use Local\MediaLibrary\Http\Requests\StoreMediaFolderRequest;
-use Local\MediaLibrary\Http\Requests\UpdateMediaFolderRequest;
-use Local\MediaLibrary\Http\Resources\MediaFolderResource;
-use Local\MediaLibrary\Models\MediaFolder;
+use Nurbekjummayev\MediaApiLibrary\Http\Requests\StoreMediaFolderRequest;
+use Nurbekjummayev\MediaApiLibrary\Http\Requests\UpdateMediaFolderRequest;
+use Nurbekjummayev\MediaApiLibrary\Http\Resources\MediaFolderResource;
+use Nurbekjummayev\MediaApiLibrary\Models\MediaFolder;
 
 class MediaFolderController extends Controller
 {

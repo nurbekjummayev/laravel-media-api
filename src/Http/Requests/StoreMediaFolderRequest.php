@@ -1,6 +1,6 @@
 <?php
 
-namespace Local\MediaLibrary\Http\Requests;
+namespace Nurbekjummayev\MediaApiLibrary\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

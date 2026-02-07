@@ -1,13 +1,13 @@
 <?php
 
-namespace Local\MediaLibrary;
+namespace Nurbekjummayev\MediaApiLibrary;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Local\MediaLibrary\Models\TempUpload;
+use Nurbekjummayev\MediaApiLibrary\Models\TempUpload;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia as SpatieInteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;

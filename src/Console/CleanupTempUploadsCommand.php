@@ -1,9 +1,9 @@
 <?php
 
-namespace Local\MediaLibrary\Console;
+namespace Nurbekjummayev\MediaApiLibrary\Console;
 
 use Illuminate\Console\Command;
-use Local\MediaLibrary\Models\TempUpload;
+use Nurbekjummayev\MediaApiLibrary\Models\TempUpload;
 
 class CleanupTempUploadsCommand extends Command
 {

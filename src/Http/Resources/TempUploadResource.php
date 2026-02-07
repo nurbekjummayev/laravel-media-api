@@ -1,10 +1,10 @@
 <?php
 
-namespace Local\MediaLibrary\Http\Resources;
+namespace Nurbekjummayev\MediaApiLibrary\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Local\MediaLibrary\Models\TempUpload;
+use Nurbekjummayev\MediaApiLibrary\Models\TempUpload;
 
 /**
  * @mixin TempUpload

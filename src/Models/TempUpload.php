@@ -1,6 +1,6 @@
 <?php
 
-namespace Local\MediaLibrary\Models;
+namespace Nurbekjummayev\MediaApiLibrary\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;

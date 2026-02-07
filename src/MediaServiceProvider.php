@@ -1,9 +1,9 @@
 <?php
 
-namespace Local\MediaLibrary;
+namespace Nurbekjummayev\MediaApiLibrary;
 
-use Local\MediaLibrary\Console\CleanupTempUploadsCommand;
-use Local\MediaLibrary\Support\CustomPathGenerator;
+use Nurbekjummayev\MediaApiLibrary\Console\CleanupTempUploadsCommand;
+use Nurbekjummayev\MediaApiLibrary\Support\CustomPathGenerator;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

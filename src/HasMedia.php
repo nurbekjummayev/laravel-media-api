@@ -1,6 +1,5 @@
 <?php
-
-namespace Local\MediaLibrary;
+namespace Nurbekjummayev\MediaApiLibrary;
 
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 

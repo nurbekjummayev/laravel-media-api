@@ -1,11 +1,11 @@
 {
-    "name": "local/laravel-medialibrary",
+    "name": "nurbekjummayev/laravel-media-api",
     "description": "Two-step upload media system with folder organization",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Local\\MediaLibrary\\": "src/"
+            "Nurbekjummayev\\MediaApiLibrary\\": "src/"
         }
     },
     "require": {
@@ -17,7 +17,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Local\\MediaLibrary\\MediaServiceProvider"
+                "Nurbekjummayev\\MediaApiLibrary\\MediaServiceProvider"
             ]
         }
     }

@@ -1,13 +1,13 @@
 <?php
 
-namespace Local\MediaLibrary\Http\Controllers;
+namespace Nurbekjummayev\MediaApiLibrary\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
-use Local\MediaLibrary\Http\Requests\StoreUploadRequest;
-use Local\MediaLibrary\Http\Resources\TempUploadResource;
-use Local\MediaLibrary\Models\TempUpload;
+use Nurbekjummayev\MediaApiLibrary\Http\Requests\StoreUploadRequest;
+use Nurbekjummayev\MediaApiLibrary\Http\Resources\TempUploadResource;
+use Nurbekjummayev\MediaApiLibrary\Models\TempUpload;
 
 class UploadController extends Controller
 {

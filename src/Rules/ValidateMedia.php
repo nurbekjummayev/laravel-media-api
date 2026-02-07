@@ -1,12 +1,12 @@
 <?php
 
-namespace Local\MediaLibrary\Rules;
+namespace Nurbekjummayev\MediaApiLibrary\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Arr;
-use Local\MediaLibrary\HasMedia;
-use Local\MediaLibrary\Models\TempUpload;
+use Nurbekjummayev\MediaApiLibrary\HasMedia;
+use Nurbekjummayev\MediaApiLibrary\Models\TempUpload;
 
 class ValidateMedia implements ValidationRule
 {
