@@ -89,6 +89,7 @@ trait InteractsWithMedia
             'max_size' => null,
             'max_files' => null,
             'conversions' => [],
+            'disk' => 'public',
         ];
 
         if (is_string($config)) {
@@ -272,11 +273,13 @@ trait InteractsWithMedia
                 }
             }
 
+            $disk = config("media-upload.disks.{$config['disk']}", $config['disk']);
+
             $this->addMedia($tempUpload->full_path)
                 ->withCustomProperties([
                     'folder_path' => $tempUpload->getFolderPath(),
                 ])
-                ->toMediaCollection($collection);
+                ->toMediaCollection($collection, $disk);
 
             $tempUpload->markAsAttached();
             $tempUpload->deleteFile();

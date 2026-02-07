@@ -120,6 +120,7 @@ class ValidateMedia implements ValidationRule
             'accept' => [],
             'max_size' => null,
             'max_files' => null,
+            'disk' => 'public',
         ];
 
         if (is_string($config)) {

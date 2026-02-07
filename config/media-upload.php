@@ -3,24 +3,20 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Temporary Upload Disk
+    | Disk Configuration
     |--------------------------------------------------------------------------
     |
-    | The disk where temporary uploads are stored before being attached
-    | to a model. This should be a private disk.
+    | Configure the disks for different storage types.
+    | - temp: Temporary uploads before being attached
+    | - public: Publicly accessible media files
+    | - private: Private media files (requires signed URLs)
     |
     */
-    'temp_disk' => 'local',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Temporary Upload Path
-    |--------------------------------------------------------------------------
-    |
-    | The path within the temp disk where temporary uploads are stored.
-    |
-    */
-    'temp_path' => 'temp',
+    'disks' => [
+        'temp' => 'local',
+        'public' => 'public',
+        'private' => 'local',
+    ],
 
     /*
     |--------------------------------------------------------------------------

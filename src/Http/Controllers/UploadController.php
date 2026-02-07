@@ -14,11 +14,14 @@ class UploadController extends Controller
     public function store(StoreUploadRequest $request): JsonResponse
     {
         $file = $request->file('file');
-        $disk = config('media-upload.temp_disk', 'local');
-        $tempPath = config('media-upload.temp_path', 'temp');
+        $disk = config('media-upload.disks.temp', 'local');
 
+        $now = now();
+        $datePath = $now->format('Y/m/d/H/i');
         $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
-        $path = $file->storeAs($tempPath, $filename, $disk);
+        $fullPath = "temp/{$datePath}/{$filename}";
+
+        $path = $file->storeAs("temp/{$datePath}", $filename, $disk);
 
         $tempUpload = TempUpload::create([
             'folder_id' => $request->input('folder_id'),

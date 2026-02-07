@@ -24,15 +24,11 @@ class CustomPathGenerator implements PathGenerator
 
     protected function getBasePath(Media $media): string
     {
-        $modelType = class_basename($media->model_type);
-        $modelId = $media->model_id;
         $folderPath = $media->getCustomProperty('folder_path');
+        $createdAt = $media->created_at ?? now();
+        $datePath = $createdAt->format('Y/m/d/H/i');
 
-        $path = "media/{$modelType}/{$modelId}";
-
-        if ($folderPath) {
-            $path .= "/{$folderPath}";
-        }
+        $path = $folderPath ? "{$folderPath}/{$datePath}" : $datePath;
 
         return $path;
     }
