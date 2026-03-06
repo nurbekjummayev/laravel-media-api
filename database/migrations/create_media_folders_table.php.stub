@@ -9,19 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('media_folders', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name');
-            $table->uuid('parent_id')->nullable();
-            $table->string('path')->index();
-            $table->string('disk')->default('public');
-            $table->timestamps();
-
-            $table->foreign('parent_id')
-                ->references('id')
-                ->on('media_folders')
-                ->onDelete('cascade');
-
-            $table->unique(['parent_id', 'name']);
+             $table->id();
+             $table->uuid();
+             $table->string('name');
+             $table->foreignId('parent_id')->nullable()->constrained('media_folders');
+             $table->string('path')->index();
+             $table->string('disk')->default('public');
+             $table->timestamps();
+             $table->unique(['parent_id', 'name']);
         });
     }
 

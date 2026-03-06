@@ -17,6 +17,7 @@ class MediaServiceProvider extends PackageServiceProvider
             ->hasMigrations([
                 'create_media_folders_table',
                 'create_temp_uploads_table',
+                'create_media_table',
             ])
             ->hasCommand(CleanupTempUploadsCommand::class);
 
