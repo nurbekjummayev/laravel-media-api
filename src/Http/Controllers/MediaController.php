@@ -12,12 +12,14 @@ use Illuminate\Support\Facades\Storage;
 use NurbekJummayev\LaravelMediaApi\Http\Requests\StoreMediaRequest;
 use NurbekJummayev\LaravelMediaApi\Models\Media;
 use NurbekJummayev\LaravelMediaApi\Services\MediaService;
+use NurbekJummayev\LaravelMediaApi\Services\MediaUrlService;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MediaController
 {
     public function __construct(
         private readonly MediaService $service,
+        private readonly MediaUrlService $urls,
     ) {}
 
     /**
@@ -43,7 +45,7 @@ class MediaController
      */
     public function view(Request $request, string $uuid): StreamedResponse
     {
-        $media = $this->authorizeSignature($request, $uuid);
+        $media = $this->urls->resolveSigned($request, $uuid);
 
         // SVG/HTML inline ochilganda <script> ishlamasligi uchun sandbox + nosniff.
         return Storage::disk($media->disk)->response($media->fullPath(), $media->name, [
@@ -57,7 +59,7 @@ class MediaController
      */
     public function download(Request $request, string $uuid): StreamedResponse
     {
-        $media = $this->authorizeSignature($request, $uuid);
+        $media = $this->urls->resolveSigned($request, $uuid);
 
         return Storage::disk($media->disk)->download($media->fullPath(), $media->name, [
             'X-Content-Type-Options' => 'nosniff',
@@ -73,13 +75,5 @@ class MediaController
         $this->service->delete($media);
 
         return okResponse();
-    }
-
-    private function authorizeSignature(Request $request, string $uuid): Media
-    {
-        // Imzo (signature) avval tekshiriladi — bu media mavjudligini oshkor qilmaydi.
-        abort_unless($request->hasValidSignature(), 403, 'Invalid or expired signature.');
-
-        return Media::query()->where('uuid', $uuid)->firstOrFail();
     }
 }

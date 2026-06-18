@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use NurbekJummayev\LaravelMediaApi\Services\MediaUrlService;
 
 /**
  * @property int $id
@@ -78,11 +78,7 @@ class Media extends Model
      */
     public function getUrlAttribute(): string
     {
-        return URL::temporarySignedRoute(
-            'media.view',
-            now()->addMinutes((int) config('media.url_ttl', 60)),
-            ['uuid' => $this->uuid],
-        );
+        return app(MediaUrlService::class)->viewUrl($this);
     }
 
     /**
@@ -90,11 +86,7 @@ class Media extends Model
      */
     public function downloadUrl(): string
     {
-        return URL::temporarySignedRoute(
-            'media.download',
-            now()->addMinutes((int) config('media.url_ttl', 60)),
-            ['uuid' => $this->uuid],
-        );
+        return app(MediaUrlService::class)->downloadUrl($this);
     }
 
     /**

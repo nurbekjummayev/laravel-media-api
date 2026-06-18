@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **BREAKING:** `view`/`download` now use Laravel temporary **signed URLs** instead of a custom encrypted `?token=`. URLs are tamper-proof (validated against `APP_KEY`) and expire after `config('media.url_ttl')`.
+- Centralised signed-URL generation and validation in a new `MediaUrlService` (`viewUrl()`, `downloadUrl()`, `resolveSigned()`); the model and controller now delegate to it instead of duplicating the signing logic.
 - Renamed config key `token_ttl` → `url_ttl`.
 - `Media::$url` now returns a signed route URL; added `Media::downloadUrl()` for signed downloads.
 
