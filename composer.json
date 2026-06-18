@@ -1,0 +1,36 @@
+{
+    "name": "nurbekjummayev/laravel-media-api",
+    "description": "Standalone media/file upload API for Laravel — upload once, get an id, link it from each model's own table. Private storage with token access and orphan cleanup.",
+    "type": "library",
+    "version": "1.0.0",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "illuminate/contracts": "^11.0|^12.0|^13.0",
+        "illuminate/support": "^11.0|^12.0|^13.0",
+        "nurbekjummayev/laravel-api-response-helpers": "^1.2",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NurbekJummayev\\LaravelMediaApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NurbekJummayev\\LaravelMediaApi\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NurbekJummayev\\LaravelMediaApi\\MediaServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
