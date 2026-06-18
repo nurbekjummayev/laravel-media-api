@@ -51,9 +51,20 @@ return [
     ],
 
     'blocked_extensions' => [
-        'php', 'php3', 'php4', 'php5', 'phtml', 'phar',
-        'exe', 'com', 'bat', 'cmd', 'msi', 'dll',
-        'sh', 'bash', 'js', 'mjs', 'html', 'htm', 'htaccess', 'env',
+        'php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phtml', 'phps', 'pht', 'phar',
+        'exe', 'com', 'bat', 'cmd', 'msi', 'dll', 'scr', 'jar',
+        'sh', 'bash', 'zsh', 'ksh', 'cgi', 'pl', 'py', 'rb',
+        'js', 'mjs', 'cjs', 'html', 'htm', 'xhtml', 'shtml', 'htaccess', 'htpasswd', 'env',
+    ],
+
+    /*
+    | Public diskda QO'SHIMCHA bloklanadigan kengaytmalar. Public fayllar web-server
+    | tomonidan to'g'ridan-to'g'ri (controller'siz) beriladi, shuning uchun ularga
+    | CSP/nosniff qo'sha olmaymiz. Brauzerda skript ishga tushira oladigan aktiv
+    | kontent (SVG, XML...) bu yerda bloklanadi — private diskda esa ruxsat.
+    */
+    'public_blocked_extensions' => [
+        'svg', 'svgz', 'xml', 'xsl', 'xslt', 'swf',
     ],
 
     /*

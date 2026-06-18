@@ -30,6 +30,14 @@ class Product extends Model
         return ['cover_media_id'];
     }
 
+    /**
+     * @return list<string>
+     */
+    protected function mediaRelations(): array
+    {
+        return ['photos'];
+    }
+
     public function photos(): BelongsToMany
     {
         return $this->belongsToMany(Media::class, 'product_media', 'product_id', 'media_id');

@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use NurbekJummayev\LaravelMediaApi\Models\Media;
 use NurbekJummayev\LaravelMediaApi\Services\MediaService;
@@ -47,6 +49,40 @@ it('stores the file under a dated Y/m/d path with the uuid as filename', functio
         ->and($media->file)->toBe($media->uuid.'.jpg');
 });
 
+it('leaves no orphan file when the media record cannot be saved', function (): void {
+    // Media yozuvini saqlashni majburan fail qilamiz.
+    Schema::drop('media');
+
+    try {
+        $this->service->store(UploadedFile::fake()->image('a.jpg'));
+    } catch (Throwable) {
+        // kutilgan
+    }
+
+    // Diskka yozilgan fayl orphan bo'lib qolmasligi kerak.
+    expect(Storage::disk('media')->allFiles())->toBeEmpty();
+});
+
+it('removes written files when the surrounding transaction rolls back', function (): void {
+    $path = null;
+
+    try {
+        DB::transaction(function () use (&$path): void {
+            $media = $this->service->store(UploadedFile::fake()->image('a.jpg'));
+            $path = $media->fullPath();
+
+            Storage::disk('media')->assertExists($path);
+
+            throw new RuntimeException('boom');
+        });
+    } catch (RuntimeException) {
+        // kutilgan
+    }
+
+    Storage::disk('media')->assertMissing($path);
+    expect(Media::count())->toBe(0);
+});
+
 it('marks the given media ids as attached', function (): void {
     $a = $this->service->store(UploadedFile::fake()->image('a.jpg'));
     $b = $this->service->store(UploadedFile::fake()->image('b.jpg'));
@@ -74,4 +110,36 @@ it('deletes the file from disk and soft-deletes the record', function (): void {
     Storage::disk('media')->assertMissing($path);
     expect(Media::query()->find($media->id))->toBeNull()
         ->and(Media::withTrashed()->find($media->id))->not->toBeNull();
+});
+
+it('defers the file removal until the transaction commits', function (): void {
+    $media = $this->service->store(UploadedFile::fake()->image('a.jpg'));
+    $path = $media->fullPath();
+
+    DB::transaction(function () use ($media, $path): void {
+        $this->service->delete($media);
+
+        // Transaction hali ochiq — fayl hali diskda.
+        Storage::disk('media')->assertExists($path);
+    });
+
+    // Commit bo'ldi — fayl o'chdi.
+    Storage::disk('media')->assertMissing($path);
+});
+
+it('keeps the file when the transaction rolls back', function (): void {
+    $media = $this->service->store(UploadedFile::fake()->image('a.jpg'));
+    $path = $media->fullPath();
+
+    try {
+        DB::transaction(function () use ($media): void {
+            $this->service->delete($media);
+            throw new RuntimeException('boom');
+        });
+    } catch (RuntimeException) {
+        // kutilgan
+    }
+
+    Storage::disk('media')->assertExists($path);
+    expect(Media::query()->find($media->id))->not->toBeNull();
 });

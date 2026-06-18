@@ -33,12 +33,20 @@ class StoreMediaRequest extends FormRequest
     }
 
     /**
-     * Xavfli kengaytmalarni (php, exe, double-ext) qo'shimcha bloklash.
+     * Xavfli kengaytmalarni qo'shimcha bloklash:
+     *  - asl nomdagi BARCHA kengaytmalar (qo'sh-kengaytma: `shell.php.jpg`);
+     *  - faylning HAQIQIY kontentidan topilgan kengaytma (nomi soxta bo'lsa ham);
+     *  - public yuklamalar uchun `public_blocked_extensions` (SVG/XML kabi aktiv kontent).
      */
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {
             $blocked = array_map('strtolower', config('media.blocked_extensions', []));
+
+            $isPublic = $this->input('type') === 'public';
+            if ($isPublic) {
+                $blocked = array_merge($blocked, array_map('strtolower', config('media.public_blocked_extensions', [])));
+            }
 
             foreach ((array) $this->file('files') as $i => $file) {
                 if (! $file) {
@@ -47,6 +55,12 @@ class StoreMediaRequest extends FormRequest
 
                 $name = strtolower($file->getClientOriginalName());
                 $parts = array_slice(explode('.', $name), 1); // barcha kengaytmalar (double-ext ham)
+
+                // Kontentdan finfo orqali topilgan haqiqiy kengaytma (spoofing'ga qarshi).
+                $guessed = strtolower((string) $file->guessExtension());
+                if ($guessed !== '') {
+                    $parts[] = $guessed;
+                }
 
                 if (array_intersect($parts, $blocked) !== []) {
                     $validator->errors()->add("files.{$i}", 'Bu fayl turi ruxsat etilmagan.');

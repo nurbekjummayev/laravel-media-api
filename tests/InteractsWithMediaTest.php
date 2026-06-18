@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use NurbekJummayev\LaravelMediaApi\Models\Media;
 use NurbekJummayev\LaravelMediaApi\Services\MediaService;
 use NurbekJummayev\LaravelMediaApi\Tests\Fixtures\Product;
 
@@ -60,4 +63,49 @@ it('only flips currently-unattached media (idempotent)', function (): void {
 
     // attached=false sharti tufayli allaqachon biriktirilgan yozuv qayta yangilanmaydi.
     expect($media->fresh()->updated_at->equalTo($updatedAt))->toBeTrue();
+});
+
+it('purges fk-column media and its file when the model is deleted', function (): void {
+    $cover = $this->service->store(UploadedFile::fake()->image('cover.jpg'));
+    $path = $cover->fullPath();
+    $product = Product::create(['cover_media_id' => $cover->id]);
+
+    $product->delete();
+
+    expect(Media::find($cover->id))->toBeNull();
+    Storage::disk('media')->assertMissing($path);
+});
+
+it('purges pivot media and detaches the relation when the model is deleted', function (): void {
+    $a = $this->service->store(UploadedFile::fake()->image('a.jpg'));
+    $b = $this->service->store(UploadedFile::fake()->image('b.jpg'));
+    $product = Product::create(['name' => 'Gallery']);
+    $product->syncMedia('photos', [$a->id, $b->id]);
+
+    $product->delete();
+
+    expect(Media::find($a->id))->toBeNull()
+        ->and(Media::find($b->id))->toBeNull()
+        ->and(DB::table('product_media')->count())->toBe(0);
+    Storage::disk('media')->assertMissing($a->fullPath());
+});
+
+it('keeps the file and media when the deleting transaction rolls back', function (): void {
+    $cover = $this->service->store(UploadedFile::fake()->image('cover.jpg'));
+    $path = $cover->fullPath();
+    $product = Product::create(['cover_media_id' => $cover->id]);
+
+    try {
+        DB::transaction(function () use ($product): void {
+            $product->delete();
+            throw new RuntimeException('boom');
+        });
+    } catch (RuntimeException) {
+        // kutilgan
+    }
+
+    // Rollback: model ham, media ham, fayl ham saqlanib qoladi.
+    expect(Product::find($product->id))->not->toBeNull()
+        ->and(Media::find($cover->id))->not->toBeNull();
+    Storage::disk('media')->assertExists($path);
 });

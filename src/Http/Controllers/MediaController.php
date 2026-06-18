@@ -7,6 +7,7 @@ namespace NurbekJummayev\LaravelMediaApi\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use NurbekJummayev\LaravelMediaApi\Http\Requests\StoreMediaRequest;
 use NurbekJummayev\LaravelMediaApi\Models\Media;
@@ -27,10 +28,12 @@ class MediaController
         $type = (string) ($request->input('type') ?? 'private');
         $ownerId = Auth::id();
 
-        $media = array_map(
+        // Hammasi-yoki-hech narsa: birorta fayl saqlanmasa, transaction rollback
+        // bo'ladi va oldin yozilgan fayllar diskdan tozalanadi (afterRollback).
+        $media = DB::transaction(fn (): array => array_map(
             fn ($file): Media => $this->service->store($file, $type, $ownerId),
             $request->file('files'),
-        );
+        ));
 
         return createdResponse($media);
     }
