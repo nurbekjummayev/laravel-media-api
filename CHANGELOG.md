@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Full test suite (Pest + Orchestra Testbench) covering the service, model, token/signature flow, the `InteractsWithMedia` trait, the `media:purge` command, and the HTTP endpoints.
-- GitHub Actions CI matrix (PHP 8.3/8.4 × Laravel 11/12).
+- GitHub Actions CI matrix (PHP 8.3/8.4 × Laravel 12).
 - `.gitignore`, `LICENSE` (MIT), and this changelog.
 
 ### Security

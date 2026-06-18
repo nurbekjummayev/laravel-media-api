@@ -4,9 +4,22 @@
 
 Standalone media/file upload API for Laravel. Upload once, get an `id`, then **each model links it from its own table**. Private storage with temporary signed-URL access and automatic orphan cleanup. Built with [`spatie/laravel-package-tools`](https://github.com/spatie/laravel-package-tools).
 
-## Install (local path package)
+## Requirements
 
-Root `composer.json`:
+- PHP `^8.3`
+- Laravel 12 or 13
+
+## Install
+
+```bash
+composer require nurbekjummayev/laravel-media-api
+php artisan migrate
+```
+
+<details>
+<summary>Installing as a local path package</summary>
+
+If you keep the package in your app's `packages/` directory, add it to the root `composer.json`:
 
 ```json
 "repositories": [
@@ -21,6 +34,8 @@ Root `composer.json`:
 composer update nurbekjummayev/laravel-media-api
 php artisan migrate
 ```
+
+</details>
 
 Files are stored under `media/private` and `media/public` (project root). Publish config if needed:
 
@@ -126,7 +141,7 @@ See `config/media.php`: `owner_model`, disks, allowed/blocked extensions, max si
 
 ## Testing
 
-The package is tested with [Pest](https://pestphp.com) on top of `orchestra/testbench` (no full Laravel app needed). CI runs the suite on PHP 8.3/8.4 against Laravel 11 and 12.
+The package is tested with [Pest](https://pestphp.com) on top of `orchestra/testbench` (no full Laravel app needed). CI runs the suite on PHP 8.3/8.4 against Laravel 12.
 
 ```bash
 composer install
