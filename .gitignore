@@ -1,0 +1,32 @@
+/vendor/
+/node_modules/
+composer.lock
+composer.phar
+
+# Build / test artifacts
+/build/
+/.phpunit.cache/
+.phpunit.result.cache
+coverage/
+clover.xml
+coverage.xml
+
+# Tool caches
+/.php-cs-fixer.cache
+/.pint.cache
+/.phpstan.cache
+phpstan.neon
+
+# Testbench / runtime media generated during tests
+/media/
+/testbench/
+
+# Editor / OS
+/.idea/
+/.vscode/
+*.sublime-*
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example

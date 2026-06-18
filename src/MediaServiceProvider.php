@@ -7,7 +7,6 @@ namespace NurbekJummayev\LaravelMediaApi;
 use Illuminate\Console\Scheduling\Schedule;
 use NurbekJummayev\LaravelMediaApi\Console\PurgeMediaCommand;
 use NurbekJummayev\LaravelMediaApi\Services\MediaService;
-use NurbekJummayev\LaravelMediaApi\Services\MediaTokenService;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -25,7 +24,6 @@ class MediaServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->app->singleton(MediaService::class);
-        $this->app->singleton(MediaTokenService::class);
     }
 
     public function packageBooted(): void

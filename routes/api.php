@@ -9,9 +9,9 @@ Route::prefix((string) config('media.prefix'))
         Route::prefix('media')
             ->controller(MediaController::class)
             ->group(function (): void {
-                // Token orqali (auth'siz) ko'rish/yuklab olish.
-                Route::get('{uuid}/view', 'view')->withoutMiddleware(config('media.middleware'));
-                Route::get('{uuid}/download', 'download')->withoutMiddleware(config('media.middleware'));
+                // Signed URL orqali (auth'siz) ko'rish/yuklab olish.
+                Route::get('{uuid}/view', 'view')->name('media.view')->withoutMiddleware(config('media.middleware'));
+                Route::get('{uuid}/download', 'download')->name('media.download')->withoutMiddleware(config('media.middleware'));
 
                 // Auth + permission (configdan).
                 Route::post('/', 'store')->middleware((array) config('media.upload_middleware'));

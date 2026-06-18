@@ -58,10 +58,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Token (private view/download)
+    | Signed URL TTL (private view/download)
     |--------------------------------------------------------------------------
+    | `view`/`download` Laravel'ning vaqtinchalik imzolangan (signed) URL'lari
+    | orqali ochiladi. Imzo APP_KEY bilan tekshiriladi, query'da o'zgartirib
+    | bo'lmaydi va shu daqiqadan keyin muddati o'tadi.
     */
-    'token_ttl' => 60, // daqiqa
+    'url_ttl' => 60, // daqiqa
 
     /*
     |--------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 # nurbekjummayev/laravel-media-api
 
-Standalone media/file upload API for Laravel. Upload once, get an `id`, then **each model links it from its own table**. Private storage with token-based access and automatic orphan cleanup. Built with [`spatie/laravel-package-tools`](https://github.com/spatie/laravel-package-tools).
+[![Tests](https://github.com/nurbekjummayev/laravel-media-api/actions/workflows/tests.yml/badge.svg)](https://github.com/nurbekjummayev/laravel-media-api/actions/workflows/tests.yml)
+
+Standalone media/file upload API for Laravel. Upload once, get an `id`, then **each model links it from its own table**. Private storage with temporary signed-URL access and automatic orphan cleanup. Built with [`spatie/laravel-package-tools`](https://github.com/spatie/laravel-package-tools).
 
 ## Install (local path package)
 
@@ -31,11 +33,13 @@ php artisan vendor:publish --tag="laravel-media-api-config"
 | Method | URI | Auth |
 |--------|-----|------|
 | `POST` | `/api/v1/media` | `auth:api` + `can:media.upload` |
-| `GET` | `/api/v1/media/{uuid}/view?token=` | token |
-| `GET` | `/api/v1/media/{uuid}/download?token=` | token |
+| `GET` | `/api/v1/media/{uuid}/view` | temporary signed URL |
+| `GET` | `/api/v1/media/{uuid}/download` | temporary signed URL |
 | `DELETE` | `/api/v1/media/{id}` | `auth:api` + `can:media.delete` |
 
-Upload accepts `files[]` (+ optional `type=public|private`) and returns `Media[]` with `id`, `uuid`, and a temporary `url`. Newly uploaded media are `attached=false`.
+Upload accepts `files[]` (+ optional `type=public|private`) and returns `Media[]` with `id`, `uuid`, and a temporary signed `url`. Newly uploaded media are `attached=false`.
+
+`view`/`download` are protected by Laravel **temporary signed URLs** (validated against `APP_KEY`, expire after `config('media.url_ttl')`). Read the signed view URL from `$media->url` and the download URL from `$media->downloadUrl()` — never hand-build these URLs. Inline `view` responses also send `X-Content-Type-Options: nosniff` and a `sandbox` CSP so SVG/HTML files can't execute scripts.
 
 ## Linking media — each model owns its link
 
@@ -118,4 +122,14 @@ Each upload also records the request `ip` and `user_agent`.
 
 ## Config
 
-See `config/media.php`: `owner_model`, disks, allowed/blocked extensions, max size, token TTL, purge window, route `prefix`/`middleware`, and per-action `upload_middleware`/`delete_middleware` (the `can:*` permission checks are pulled from here, so you can rename permissions or add throttling without touching the package).
+See `config/media.php`: `owner_model`, disks, allowed/blocked extensions, max size, signed-URL TTL (`url_ttl`), purge window, route `prefix`/`middleware`, and per-action `upload_middleware`/`delete_middleware` (the `can:*` permission checks are pulled from here, so you can rename permissions or add throttling without touching the package).
+
+## Testing
+
+The package is tested with [Pest](https://pestphp.com) on top of `orchestra/testbench` (no full Laravel app needed). CI runs the suite on PHP 8.3/8.4 against Laravel 11 and 12.
+
+```bash
+composer install
+composer test            # vendor/bin/pest
+composer test-coverage   # with coverage
+```

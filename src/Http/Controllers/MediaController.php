@@ -11,14 +11,12 @@ use Illuminate\Support\Facades\Storage;
 use NurbekJummayev\LaravelMediaApi\Http\Requests\StoreMediaRequest;
 use NurbekJummayev\LaravelMediaApi\Models\Media;
 use NurbekJummayev\LaravelMediaApi\Services\MediaService;
-use NurbekJummayev\LaravelMediaApi\Services\MediaTokenService;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MediaController
 {
     public function __construct(
         private readonly MediaService $service,
-        private readonly MediaTokenService $tokens,
     ) {}
 
     /**
@@ -38,23 +36,29 @@ class MediaController
     }
 
     /**
-     * GET {prefix}/media/{uuid}/view?token= — faylni inline ko'rsatadi (token bilan, auth'siz).
+     * GET {prefix}/media/{uuid}/view — faylni inline ko'rsatadi (signed URL bilan, auth'siz).
      */
     public function view(Request $request, string $uuid): StreamedResponse
     {
-        $media = $this->authorizeToken($request, $uuid);
+        $media = $this->authorizeSignature($request, $uuid);
 
-        return Storage::disk($media->disk)->response($media->fullPath(), $media->name);
+        // SVG/HTML inline ochilganda <script> ishlamasligi uchun sandbox + nosniff.
+        return Storage::disk($media->disk)->response($media->fullPath(), $media->name, [
+            'Content-Security-Policy' => "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox",
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 
     /**
-     * GET {prefix}/media/{uuid}/download?token= — faylni yuklab olish (attachment).
+     * GET {prefix}/media/{uuid}/download — faylni yuklab olish (attachment, signed URL bilan).
      */
     public function download(Request $request, string $uuid): StreamedResponse
     {
-        $media = $this->authorizeToken($request, $uuid);
+        $media = $this->authorizeSignature($request, $uuid);
 
-        return Storage::disk($media->disk)->download($media->fullPath(), $media->name);
+        return Storage::disk($media->disk)->download($media->fullPath(), $media->name, [
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 
     /**
@@ -68,16 +72,11 @@ class MediaController
         return okResponse();
     }
 
-    private function authorizeToken(Request $request, string $uuid): Media
+    private function authorizeSignature(Request $request, string $uuid): Media
     {
-        $media = Media::query()->where('uuid', $uuid)->firstOrFail();
+        // Imzo (signature) avval tekshiriladi — bu media mavjudligini oshkor qilmaydi.
+        abort_unless($request->hasValidSignature(), 403, 'Invalid or expired signature.');
 
-        abort_unless(
-            $this->tokens->valid((string) $request->query('token'), $uuid),
-            403,
-            'Invalid or expired token.',
-        );
-
-        return $media;
+        return Media::query()->where('uuid', $uuid)->firstOrFail();
     }
 }

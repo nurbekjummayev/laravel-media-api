@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use NurbekJummayev\LaravelMediaApi\Services\MediaTokenService;
 
 /**
  * @property int $id
@@ -74,13 +74,27 @@ class Media extends Model
     }
 
     /**
-     * Token bilan vaqtinchalik ko'rish URL'i (frontda <img>/<a> uchun).
+     * Vaqtinchalik imzolangan (signed) ko'rish URL'i — frontda <img>/<a> uchun.
      */
     public function getUrlAttribute(): string
     {
-        $token = app(MediaTokenService::class)->make($this);
+        return URL::temporarySignedRoute(
+            'media.view',
+            now()->addMinutes((int) config('media.url_ttl', 60)),
+            ['uuid' => $this->uuid],
+        );
+    }
 
-        return url(config('media.prefix').'/media/'.$this->uuid.'/view').'?token='.$token;
+    /**
+     * Vaqtinchalik imzolangan yuklab olish (download) URL'i.
+     */
+    public function downloadUrl(): string
+    {
+        return URL::temporarySignedRoute(
+            'media.download',
+            now()->addMinutes((int) config('media.url_ttl', 60)),
+            ['uuid' => $this->uuid],
+        );
     }
 
     /**
